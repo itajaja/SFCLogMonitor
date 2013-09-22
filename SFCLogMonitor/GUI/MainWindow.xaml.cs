@@ -5,18 +5,22 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using SFCLogMonitor.ViewModel;
 
-namespace SFCLogMonitor
+namespace SFCLogMonitor.GUI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
+        private readonly ViewModel.ViewModel _vm;
+        private readonly string _path;
+
         public MainWindow()
         {
             InitializeComponent();
-            _vm = (ViewModel)Resources["Vm"];
+            _vm = (ViewModel.ViewModel)Resources["Vm"];
             _path = Directory.GetCurrentDirectory();
             LoadConfiguration();
             //            _vm.StringList.CollectionChanged += (sender, args) => StringListView.ScrollIntoView(_vm.StringList.LastOrDefault());
@@ -46,7 +50,7 @@ namespace SFCLogMonitor
             foreach (var f in Directory.GetFiles(_path).Select(Path.GetFileName))
             {
                 if (!_vm.ExcludeList.Contains(f) )
-                    _vm.FileList.Add(new File
+                    _vm.FileList.Add(new LogFile
                     {
                         FileName = Path.GetFileName(f),
                         LastRow  = new ReverseLineReader(f).FirstOrDefault()
@@ -54,13 +58,13 @@ namespace SFCLogMonitor
             }
         }
 
-        private void CheckAndAddRow(string line, File file)
+        private void CheckAndAddRow(string line, LogFile logFile)
         {
             if (_vm.SearchList.Any(s => CultureInfo.CurrentCulture.CompareInfo.IndexOf(line, s, CompareOptions.IgnoreCase) >= 0))
             {
                 var r = new Row
                 {
-                    File = file,
+                    LogFile = logFile,
                     Text = line,
                     Date = DateTime.Now
                 };
@@ -78,18 +82,18 @@ namespace SFCLogMonitor
             {
                 var reverseReader = new ReverseLineReader(fileName);
                 string lastRow = reverseReader.FirstOrDefault();
-                File file = _vm.FileList.SingleOrDefault(f => f.FileName == fileName);
-                if (file == null)
+                LogFile logFile = _vm.FileList.SingleOrDefault(f => f.FileName == fileName);
+                if (logFile == null)
                     return;
                 foreach (var row in reverseReader)
                 {
-                    if (row == file.LastRow)
+                    if (row == logFile.LastRow)
                     {
                         break;
                     }
-                    CheckAndAddRow(row,file);
+                    CheckAndAddRow(row,logFile);
                 }
-                file.LastRow = lastRow;
+                logFile.LastRow = lastRow;
             }
             catch (IOException ioException)
             {
@@ -116,24 +120,21 @@ namespace SFCLogMonitor
             MessageBox.Show("oncreated");
             string f = e.Name;
             if (!_vm.ExcludeList.Contains(f))
-                _vm.FileList.Add(new File
+                _vm.FileList.Add(new LogFile
                 {
                     FileName = f,
                     LastRow = new ReverseLineReader(f).FirstOrDefault()
                 });
         }
-
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
         
-        private readonly ViewModel _vm;
-        private readonly string _path;
-
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             _vm.StringList.Clear();
+        }
+
+        private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.Close();
         }
     }
 }
