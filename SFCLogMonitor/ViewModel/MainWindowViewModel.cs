@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using SFCLogMonitor.Model;
@@ -13,16 +12,21 @@ namespace SFCLogMonitor.ViewModel
 {
     public class MainWindowViewModel : NotifyPropertyChanged
     {
+        #region fields
+
         private ObservableCollection<Row> _stringList;
         private readonly CollectionViewSource _stringListViewSource;
         private ObservableCollection<LogFile> _fileList;
         private ObservableCollection<string> _excludeList;
         private ObservableCollection<string> _searchList;
+        private bool _isKeyFilteringEnabled;
         private TimeUnit _filteringTimeUnit;
         private int _filteringTime;
         private bool _isFilteringTimeEnabled;
         private DateTime _beginMonitoringTime;
         private int _rowLimit;
+
+        #endregion
 
         public MainWindowViewModel()
         {
@@ -35,7 +39,6 @@ namespace SFCLogMonitor.ViewModel
             BeginMonitoringTime = DateTime.Now;
         }
 
-        private DateTime _timeToUpdate;
         /// <summary>
         ///tracks when the view changes, in order to set the timer for the next refresh
         /// </summary>
@@ -44,8 +47,6 @@ namespace SFCLogMonitor.ViewModel
             var collectionView = (ListCollectionView) sender;
             var lastDisplayedRow = collectionView.Cast<Row>().LastOrDefault();
             if (lastDisplayedRow == null) return;
-//            if (lastDisplayedRow.Date <= _timeToUpdate) return;
-            _timeToUpdate = lastDisplayedRow.Date;
             DispatcherTimeout.Timeout(DispatcherPriority.Normal, FilteringTimeSpan - (DateTime.Now - lastDisplayedRow.Date),
                 _ =>
                 {
@@ -79,6 +80,8 @@ namespace SFCLogMonitor.ViewModel
                 args.Accepted = false;
             }
         }
+
+        #region properties
 
         public ObservableCollection<Row> StringList
         {
@@ -164,6 +167,12 @@ namespace SFCLogMonitor.ViewModel
             set { SetField(ref _rowLimit, value, "RowLimit"); }
         }
 
+        public bool IsKeyFilteringEnabled
+        {
+            get { return _isKeyFilteringEnabled; }
+            set { SetField(ref _isKeyFilteringEnabled, value, "IsKeyFilteringEnabled"); }
+        }
+
         public TimeSpan FilteringTimeSpan
         {
             get
@@ -189,5 +198,8 @@ namespace SFCLogMonitor.ViewModel
                 return span;
             }
         }
+
+        #endregion
+
     }
 }
