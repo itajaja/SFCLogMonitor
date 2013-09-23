@@ -117,16 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Exclude" xml:space="preserve">
-    <value />
-  </data>
-  <data name="RowLimit" xml:space="preserve">
-    <value>20000</value>
-  </data>
-  <data name="SearchList" xml:space="preserve">
-    <value>ERROR</value>
-  </data>
-  <data name="TimeSpan" xml:space="preserve">
-    <value />
-  </data>
 </root>

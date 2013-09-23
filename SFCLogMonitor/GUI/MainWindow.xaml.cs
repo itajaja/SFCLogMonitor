@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using SFCLogMonitor.Properties;
+using SFCLogMonitor.Utils;
 using SFCLogMonitor.ViewModel;
 
 namespace SFCLogMonitor.GUI
@@ -44,8 +48,11 @@ namespace SFCLogMonitor.GUI
 
         private void LoadConfiguration()
         {
-            _vm.ExcludeList = new ObservableCollection<string>(Properties.Resources.Exclude.Split(',')) {"SFCLogMonitor.exe"};
-            _vm.SearchList = new ObservableCollection<string>(Properties.Resources.SearchList.Split(','));
+            var settings = Settings.Default;
+            if(settings.Exclude != null)
+                _vm.ExcludeList = new ObservableCollection<string>(settings.Exclude.Cast<string>().ToList()) { "SFCLogMonitor.exe" };
+            if (settings.Filter != null)
+                _vm.SearchList = new ObservableCollection<string>(settings.Filter.Cast<string>().ToList());
             foreach (var f in Directory.GetFiles(_path).Select(Path.GetFileName))
             {
                 if (!_vm.ExcludeList.Contains(f) )
@@ -55,6 +62,10 @@ namespace SFCLogMonitor.GUI
                         LastRow  = new ReverseLineReader(f).FirstOrDefault()
                     });
             }
+            _vm.FilteringTime = settings.TimeSpan;
+            _vm.FilteringTimeUnit = (TimeUnit)settings.TimeUnit;
+            _vm.RowLimit = settings.RowLimit;
+            _vm.IsFilteringTimeEnabled = settings.IsTimeFiltering;
         }
 
         private void CheckAndAddRow(string line, LogFile logFile)
@@ -108,7 +119,21 @@ namespace SFCLogMonitor.GUI
             }
         }
 
-        // Define the event handlers. 
+        private void SaveSettings()
+        {
+            var settings = Settings.Default;
+            settings.TimeSpan = _vm.FilteringTime;
+            settings.Exclude = new StringCollection();
+            settings.Exclude.AddRange(_vm.ExcludeList.ToArray());
+            settings.Filter = new StringCollection();
+            settings.Filter.AddRange(_vm.SearchList.ToArray());
+            settings.IsTimeFiltering = _vm.IsFilteringTimeEnabled;
+            settings.RowLimit = _vm.RowLimit;
+            settings.TimeUnit = (int)_vm.FilteringTimeUnit;
+            settings.Save();
+        }
+
+        #region events
         private void OnChanged(object source, FileSystemEventArgs e)
         {
             CheckFile(e.Name);
@@ -124,7 +149,7 @@ namespace SFCLogMonitor.GUI
                     LastRow = new ReverseLineReader(f).FirstOrDefault()
                 });
         }
-        
+
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Are you sure to clear the current session? cannot be undone.", "Clear", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation, MessageBoxResult.Cancel) == MessageBoxResult.OK)
@@ -133,5 +158,12 @@ namespace SFCLogMonitor.GUI
                 _vm.BeginMonitoringTime = DateTime.Now;
             }
         }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            SaveSettings();
+        }
+        #endregion
+
     }
 }

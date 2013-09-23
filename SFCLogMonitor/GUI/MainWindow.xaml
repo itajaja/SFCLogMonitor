@@ -7,7 +7,7 @@
         xmlns:utils="clr-namespace:SFCLogMonitor.Utils"
         mc:Ignorable="d" x:Class="SFCLogMonitor.GUI.MainWindow"
         Title="SFC Log Monitor" Height="500" Width="850" MinHeight="350" MinWidth="150" Icon="/SFCLogMonitor;component/Resources/862154ed6b67c24b.png"
-        Name="Main">
+        Name="Main" Closing="MainWindow_OnClosing">
     <Window.Resources>
         <viewModel:ViewModel x:Key="Vm"/>
         <ObjectDataProvider x:Key="dataFromEnum"
@@ -58,7 +58,7 @@
                         <RowDefinition />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <CheckBox Name="TimeCheckBox" Content="Show events from the last:" Margin="0,0,0,5"/>
+                    <CheckBox Name="TimeCheckBox" Content="Show events from the last:" Margin="0,0,0,5" IsChecked="{Binding IsFilteringTimeEnabled}"/>
                     <StackPanel Grid.Row="1" Orientation="Horizontal">
                     <TextBox Width="40" VerticalAlignment="Top"
                                  IsEnabled="{Binding ElementName=TimeCheckBox, Path=IsChecked}" Text="{Binding Path=FilteringTime}"/>

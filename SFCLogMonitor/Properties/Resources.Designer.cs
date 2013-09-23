@@ -59,41 +59,5 @@ namespace SFCLogMonitor.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string Exclude {
-            get {
-                return ResourceManager.GetString("Exclude", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 20000.
-        /// </summary>
-        internal static string RowLimit {
-            get {
-                return ResourceManager.GetString("RowLimit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ERROR.
-        /// </summary>
-        internal static string SearchList {
-            get {
-                return ResourceManager.GetString("SearchList", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string TimeSpan {
-            get {
-                return ResourceManager.GetString("TimeSpan", resourceCulture);
-            }
-        }
     }
 }
