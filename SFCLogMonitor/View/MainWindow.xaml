@@ -55,7 +55,7 @@
             </Grid.Resources>
             <GroupBox Grid.RowSpan="2" Header="Filtering">
                 <StackPanel>
-                    <Button x:Name="SearchButton" Content="Filter" />
+                    <Button x:Name="SearchButton" Content="Filter" Click="SearchButton_Click" />
                     <Button x:Name="ExcluceButton" Content="Exclude Files" />
                 </StackPanel>
             </GroupBox>

@@ -172,5 +172,10 @@ namespace SFCLogMonitor.View
         }
 
         #endregion
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            new FilterWindow().ShowDialog();
+        }
     }
 }
