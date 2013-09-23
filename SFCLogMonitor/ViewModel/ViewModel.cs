@@ -14,6 +14,7 @@ namespace SFCLogMonitor.ViewModel
         private int _filteringTime;
         private bool _isFilteringTimeEnabled;
         private DateTime _beginMonitoringTime;
+        private int _rowLimit;
 
         public ViewModel()
         {
@@ -70,6 +71,12 @@ namespace SFCLogMonitor.ViewModel
         {
             get { return _beginMonitoringTime; }
             set { SetField(ref _beginMonitoringTime, value, "BeginMonitoringTime"); }
+        }
+
+        public int RowLimit
+        {
+            get { return _rowLimit; }
+            set { SetField(ref _rowLimit, value, "RowLimit"); }
         }
     }
 

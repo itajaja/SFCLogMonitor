@@ -44,8 +44,7 @@ namespace SFCLogMonitor.GUI
 
         private void LoadConfiguration()
         {
-            _vm.ExcludeList = new ObservableCollection<string>(Properties.Resources.Exclude.Split(','));
-            _vm.ExcludeList.Add("SFCLogMonitor.exe");
+            _vm.ExcludeList = new ObservableCollection<string>(Properties.Resources.Exclude.Split(',')) {"SFCLogMonitor.exe"};
             _vm.SearchList = new ObservableCollection<string>(Properties.Resources.SearchList.Split(','));
             foreach (var f in Directory.GetFiles(_path).Select(Path.GetFileName))
             {
@@ -69,9 +68,9 @@ namespace SFCLogMonitor.GUI
                     Date = DateTime.Now
                 };
                 Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.Insert(0,r)));
-                while (_vm.StringList.Count > 5000) //todo parametrize!
+                while (_vm.StringList.Count > _vm.RowLimit)
                 {
-                    _vm.StringList.RemoveAt(4999);
+                    Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.RemoveAt(_vm.RowLimit)));
                 }
             }
         }
@@ -99,7 +98,7 @@ namespace SFCLogMonitor.GUI
             {
                 if (counter < 10)
                 {
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
                     CheckFile(fileName, counter + 1);
                 }
                 else
@@ -117,7 +116,6 @@ namespace SFCLogMonitor.GUI
 
         private void OnCreated(object source, FileSystemEventArgs e)
         {
-            MessageBox.Show("oncreated");
             string f = e.Name;
             if (!_vm.ExcludeList.Contains(f))
                 _vm.FileList.Add(new LogFile
@@ -129,12 +127,11 @@ namespace SFCLogMonitor.GUI
         
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            _vm.StringList.Clear();
-        }
-
-        private void ExitMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            Application.Current.MainWindow.Close();
+            if (MessageBox.Show("Are you sure to clear the current session? cannot be undone.", "Clear", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation, MessageBoxResult.Cancel) == MessageBoxResult.OK)
+            {
+                _vm.StringList.Clear();
+                _vm.BeginMonitoringTime = DateTime.Now;
+            }
         }
     }
 }

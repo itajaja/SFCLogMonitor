@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace SFCLogMonitor.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -63,6 +66,15 @@ namespace SFCLogMonitor.Properties {
         internal static string Exclude {
             get {
                 return ResourceManager.GetString("Exclude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 20000.
+        /// </summary>
+        internal static string RowLimit {
+            get {
+                return ResourceManager.GetString("RowLimit", resourceCulture);
             }
         }
         
