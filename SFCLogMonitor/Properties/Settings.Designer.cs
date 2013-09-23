@@ -36,20 +36,6 @@ namespace SFCLogMonitor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>error</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection Filter {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["Filter"]));
-            }
-            set {
-                this["Filter"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int TimeSpan {
             get {
@@ -93,6 +79,32 @@ namespace SFCLogMonitor.Properties {
             }
             set {
                 this["IsTimeFiltering"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
+            "tring>error</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection Filter {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Filter"]));
+            }
+            set {
+                this["Filter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsKeyFiltering {
+            get {
+                return ((bool)(this["IsKeyFiltering"]));
+            }
+            set {
+                this["IsKeyFiltering"] = value;
             }
         }
     }

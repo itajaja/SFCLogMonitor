@@ -70,6 +70,7 @@ namespace SFCLogMonitor.View
             _vm.FilteringTimeUnit = (TimeUnit) settings.TimeUnit;
             _vm.RowLimit = settings.RowLimit;
             _vm.IsFilteringTimeEnabled = settings.IsTimeFiltering;
+            _vm.IsKeyFilteringEnabled = settings.IsKeyFiltering;
         }
 
         private void CheckAndAddRow(string line, LogFile logFile)
@@ -131,6 +132,7 @@ namespace SFCLogMonitor.View
             settings.IsTimeFiltering = _vm.IsFilteringTimeEnabled;
             settings.RowLimit = _vm.RowLimit;
             settings.TimeUnit = (int) _vm.FilteringTimeUnit;
+            settings.IsKeyFiltering = _vm.IsKeyFilteringEnabled;
             settings.Save();
         }
 

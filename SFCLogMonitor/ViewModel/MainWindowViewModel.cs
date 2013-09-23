@@ -67,7 +67,7 @@ namespace SFCLogMonitor.ViewModel
                 }
             }
             //filter by keyword
-            if (!SearchList.Any(s => CultureInfo.CurrentCulture.CompareInfo.IndexOf(row.Text, s, CompareOptions.IgnoreCase) >= 0))
+            if (IsKeyFilteringEnabled && !SearchList.Any(s => CultureInfo.CurrentCulture.CompareInfo.IndexOf(row.Text, s, CompareOptions.IgnoreCase) >= 0))
             {
                 args.Accepted = false;
                 return;
@@ -170,7 +170,11 @@ namespace SFCLogMonitor.ViewModel
         public bool IsKeyFilteringEnabled
         {
             get { return _isKeyFilteringEnabled; }
-            set { SetField(ref _isKeyFilteringEnabled, value, "IsKeyFilteringEnabled"); }
+            set
+            {
+                SetField(ref _isKeyFilteringEnabled, value, "IsKeyFilteringEnabled");
+                StringListViewSource.View.Refresh();
+            }
         }
 
         public TimeSpan FilteringTimeSpan
