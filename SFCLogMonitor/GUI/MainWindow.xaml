@@ -9,6 +9,7 @@
         Title="SFC Log Monitor" Height="500" Width="850" MinHeight="350" MinWidth="150" Icon="/SFCLogMonitor;component/Resources/862154ed6b67c24b.png"
         Name="Main" Closing="MainWindow_OnClosing">
     <Window.Resources>
+        <SolidColorBrush x:Key="ToolBrush" Color="#FFF4F4F4"></SolidColorBrush>
         <viewModel:ViewModel x:Key="Vm"/>
         <ObjectDataProvider x:Key="dataFromEnum"
        MethodName="GetValues" ObjectType="{x:Type system:Enum}">
@@ -22,6 +23,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ToolBar ToolBarTray.IsLocked="True">
             <ToggleButton Name="OptionsButton" IsChecked="True">Options</ToggleButton>
@@ -29,7 +31,7 @@
             <Button>Preferences</Button>
             <Button>About</Button>
         </ToolBar>
-        <Grid Grid.Row="1" Visibility="{Binding ElementName=OptionsButton, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" Background="#FFF4F4F4">
+        <Grid Grid.Row="1" Visibility="{Binding ElementName=OptionsButton, Path=IsChecked, Converter={StaticResource BooleanToVisibility}}" Background="{StaticResource ToolBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -67,18 +69,6 @@
                                   ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
                                   SelectedItem="{Binding FilteringTimeUnit}" Width="70" Margin="4,0"/>
                     </StackPanel>
-                    <TextBlock Foreground="DimGray" VerticalAlignment="Bottom" Grid.Row="2">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}Monitoring started on &#10;{0}/{1}/{2} {3}:{4}:{5}">
-                                <Binding Path="BeginMonitoringTime.Month"/>
-                                <Binding Path="BeginMonitoringTime.Day"/>
-                                <Binding Path="BeginMonitoringTime.Year"/>
-                                <Binding Path="BeginMonitoringTime.Hour"/>
-                                <Binding Path="BeginMonitoringTime.Minute"/>
-                                <Binding Path="BeginMonitoringTime.Second"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
                 </Grid>
             </GroupBox>
             <GroupBox Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Header="Actions">
@@ -96,7 +86,7 @@
             </StackPanel>
             </GroupBox>
         </Grid>
-        <ListView Grid.Column="0" Grid.Row="2" x:Name="StringListView" ItemsSource="{Binding StringList}" ItemTemplate="{DynamicResource ListViewRowTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListView Grid.Row="2" x:Name="StringListView" ItemsSource="{Binding StringList}" ItemTemplate="{DynamicResource ListViewRowTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.RowSpan="2">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -124,5 +114,33 @@
                 </DataTemplate>
             </ListView.Resources>
         </ListView>
+        <Border Grid.Row="3" BorderThickness="1" BorderBrush="Gray">
+            <Grid Background="{StaticResource ToolBrush}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock>
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}Monitoring started on {0}/{1}/{2} {3}:{4}:{5}">
+                            <Binding Path="BeginMonitoringTime.Month" />
+                            <Binding Path="BeginMonitoringTime.Day" />
+                            <Binding Path="BeginMonitoringTime.Year" />
+                            <Binding Path="BeginMonitoringTime.Hour" />
+                            <Binding Path="BeginMonitoringTime.Minute" />
+                            <Binding Path="BeginMonitoringTime.Second" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="2">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} rows stored since beginning (limit {1})">
+                            <Binding Path="StringList.Count" />
+                            <Binding Path="RowLimit" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid></Border>
     </Grid>
 </Window>
