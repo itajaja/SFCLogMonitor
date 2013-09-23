@@ -15,6 +15,5 @@ namespace SFCLogMonitor.Utils
         Minutes,
         Hours,
         Days,
-        Months,
     }
 }

@@ -7,9 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
+using SFCLogMonitor.Model;
+using SFCLogMonitor.ViewModel;
 using SFCLogMonitor.Properties;
 using SFCLogMonitor.Utils;
-using SFCLogMonitor.ViewModel;
 
 namespace SFCLogMonitor.GUI
 {
@@ -18,13 +19,13 @@ namespace SFCLogMonitor.GUI
     /// </summary>
     public partial class MainWindow
     {
-        private readonly ViewModel.ViewModel _vm;
+        private readonly MainWindowViewModel _vm;
         private readonly string _path;
 
         public MainWindow()
         {
             InitializeComponent();
-            _vm = (ViewModel.ViewModel)Resources["Vm"];
+            _vm = (MainWindowViewModel)Resources["Vm"];
             _path = Directory.GetCurrentDirectory();
             LoadConfiguration();
             //            _vm.StringList.CollectionChanged += (sender, args) => StringListView.ScrollIntoView(_vm.StringList.LastOrDefault());

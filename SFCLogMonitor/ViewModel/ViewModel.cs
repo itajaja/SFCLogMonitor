@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
+using SFCLogMonitor.Model;
 using SFCLogMonitor.Utils;
 
 namespace SFCLogMonitor.ViewModel
 {
-    public class ViewModel : NotifyPropertyChanged
+    public class MainWindowViewModel : NotifyPropertyChanged
     {
         private ObservableCollection<Row> _stringList;
-        private CollectionViewSource _stringListViewSource;
+        private readonly CollectionViewSource _stringListViewSource;
         private ObservableCollection<LogFile> _fileList;
         private ObservableCollection<string> _excludeList;
         private ObservableCollection<string> _searchList;
@@ -18,25 +19,66 @@ namespace SFCLogMonitor.ViewModel
         private DateTime _beginMonitoringTime;
         private int _rowLimit;
 
-        public ViewModel()
+        public MainWindowViewModel()
         {
+            _stringListViewSource = new CollectionViewSource();
+            StringListViewSource.Filter += (sender, args) =>
+            {
+                args.Accepted = true;
+                var row = (Row) args.Item;
+                //filter by time
+                if (IsFilteringTimeEnabled)
+                {
+                    TimeSpan span;
+                    switch (FilteringTimeUnit)
+                    {
+                        case TimeUnit.Seconds:
+                            span = TimeSpan.FromSeconds(FilteringTime);
+                            break;
+                        case TimeUnit.Minutes:
+                            span = TimeSpan.FromMinutes(FilteringTime);
+                            break;
+                        case TimeUnit.Hours:
+                            span = TimeSpan.FromHours(FilteringTime);
+                            break;
+                        case TimeUnit.Days:
+                            span = TimeSpan.FromDays(FilteringTime);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    if ((DateTime.Now - row.Date) > span)
+                    {
+                        args.Accepted = false;
+                        return;
+                    }
+                }
+                //filter by file
+                if (ExcludeList.Contains(row.LogFile.FileName))
+                {
+                    args.Accepted = false;
+                }
+            };
             StringList = new ObservableCollection<Row>();
             FileList = new ObservableCollection<LogFile>();
             ExcludeList = new ObservableCollection<string>();
             SearchList = new ObservableCollection<string>();
-            _beginMonitoringTime = DateTime.Now;
+            BeginMonitoringTime = DateTime.Now;
         }
 
         public ObservableCollection<Row> StringList
         {
             get { return _stringList; }
-            set { SetField(ref _stringList, value, "StringList"); }
+            set
+            {
+                SetField(ref _stringList, value, "StringList");
+                StringListViewSource.Source = value;
+            }
         }
 
         public CollectionViewSource StringListViewSource
         {
             get { return _stringListViewSource; }
-            set { SetField(ref _stringListViewSource, value, "StringListViewSource"); }
         }
 
         public ObservableCollection<LogFile> FileList
@@ -85,49 +127,6 @@ namespace SFCLogMonitor.ViewModel
         {
             get { return _rowLimit; }
             set { SetField(ref _rowLimit, value, "RowLimit"); }
-        }
-    }
-
-    public class LogFile : NotifyPropertyChanged
-    {
-        private string _fileName;
-        private string _lastRow;
-
-        public string FileName
-        {
-            get { return _fileName; }
-            set { SetField(ref _fileName, value, "FileName"); }
-        }
-
-        public string LastRow
-        {
-            get { return _lastRow; }
-            set { SetField(ref _lastRow, value, "LastRow"); }
-        }
-    }
-
-    public class Row : NotifyPropertyChanged
-    {
-        private LogFile _logFile;
-        private string _text;
-        private DateTime _date;
-
-        public LogFile LogFile
-        {
-            get { return _logFile; }
-            set { SetField(ref _logFile, value, "LogFile"); }
-        }
-
-        public string Text
-        {
-            get { return _text; }
-            set { SetField(ref _text, value, "Text"); }
-        }
-
-        public DateTime Date
-        {
-            get { return _date; }
-            set { SetField(ref _date, value, "Date"); }
         }
     }
 }
