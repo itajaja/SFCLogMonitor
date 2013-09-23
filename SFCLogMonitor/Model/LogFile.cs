@@ -1,4 +1,5 @@
-﻿using SFCLogMonitor.ViewModel;
+﻿using SFCLogMonitor.Utils;
+using SFCLogMonitor.ViewModel;
 
 namespace SFCLogMonitor.Model
 {

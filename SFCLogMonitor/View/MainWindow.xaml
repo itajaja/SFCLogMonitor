@@ -6,7 +6,7 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:utils="clr-namespace:SFCLogMonitor.Utils"
         xmlns:model="clr-namespace:SFCLogMonitor.Model"
-        mc:Ignorable="d" x:Class="SFCLogMonitor.GUI.MainWindow"
+        mc:Ignorable="d" x:Class="SFCLogMonitor.View.MainWindow"
         Title="SFC Log Monitor" Height="500" Width="850" MinHeight="350" MinWidth="150" Icon="/SFCLogMonitor;component/Resources/862154ed6b67c24b.png"
         Name="Main" Closing="MainWindow_OnClosing">
     <Window.Resources>
@@ -87,7 +87,7 @@
             </StackPanel>
             </GroupBox>
         </Grid>
-        <ListView Grid.Row="2" x:Name="StringListView" ItemsSource="{Binding StringListViewSource}" ItemTemplate="{DynamicResource ListViewRowTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+        <ListView Grid.Row="2" x:Name="StringListView" ItemsSource="{Binding StringListViewSource.View}" ItemTemplate="{DynamicResource ListViewRowTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

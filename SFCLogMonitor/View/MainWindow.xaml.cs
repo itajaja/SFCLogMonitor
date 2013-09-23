@@ -8,11 +8,11 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using SFCLogMonitor.Model;
-using SFCLogMonitor.ViewModel;
 using SFCLogMonitor.Properties;
 using SFCLogMonitor.Utils;
+using SFCLogMonitor.ViewModel;
 
-namespace SFCLogMonitor.GUI
+namespace SFCLogMonitor.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -28,7 +28,6 @@ namespace SFCLogMonitor.GUI
             _vm = (MainWindowViewModel)Resources["Vm"];
             _path = Directory.GetCurrentDirectory();
             LoadConfiguration();
-            //            _vm.StringList.CollectionChanged += (sender, args) => StringListView.ScrollIntoView(_vm.StringList.LastOrDefault());
             InitializeWatcher();
         }
 
@@ -45,7 +44,6 @@ namespace SFCLogMonitor.GUI
             // Begin watching.
             watcher.EnableRaisingEvents = true;
         }
-
 
         private void LoadConfiguration()
         {
@@ -71,19 +69,16 @@ namespace SFCLogMonitor.GUI
 
         private void CheckAndAddRow(string line, LogFile logFile)
         {
-            if (_vm.SearchList.Any(s => CultureInfo.CurrentCulture.CompareInfo.IndexOf(line, s, CompareOptions.IgnoreCase) >= 0))
+            var r = new Row
             {
-                var r = new Row
-                {
-                    LogFile = logFile,
-                    Text = line,
-                    Date = DateTime.Now
-                };
-                Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.Insert(0,r)));
-                while (_vm.StringList.Count > _vm.RowLimit)
-                {
-                    Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.RemoveAt(_vm.RowLimit)));
-                }
+                LogFile = logFile,
+                Text = line,
+                Date = DateTime.Now
+            };
+            Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.Insert(0,r)));
+            while (_vm.StringList.Count > _vm.RowLimit)
+            {
+                Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.RemoveAt(_vm.RowLimit)));
             }
         }
 

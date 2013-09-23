@@ -51,13 +51,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Utils\DispatcherTimeout.cs" />
     <Compile Include="Utils\TailReader.cs" />
     <Compile Include="Utils\TimeUnit.cs" />
     <Compile Include="ViewModel\Converters.cs" />
     <Compile Include="Model\LogFile.cs" />
     <Compile Include="Utils\NotifyPropertyChanged.cs" />
     <Compile Include="Model\Row.cs" />
-    <Compile Include="ViewModel\ViewModel.cs" />
+    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Page Include="View\FilterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -65,6 +70,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\FilterWindow.xaml.cs">
+      <DependentUpon>FilterWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

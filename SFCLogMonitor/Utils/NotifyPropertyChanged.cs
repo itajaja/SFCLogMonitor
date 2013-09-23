@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace SFCLogMonitor.ViewModel
+namespace SFCLogMonitor.Utils
 {
     /// <summary>
     /// Abstract base class that implements the INotifyPropertyChanged interface with some utility methods to write properties
