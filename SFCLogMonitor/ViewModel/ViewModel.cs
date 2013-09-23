@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 using SFCLogMonitor.Utils;
 
 namespace SFCLogMonitor.ViewModel
@@ -7,6 +8,7 @@ namespace SFCLogMonitor.ViewModel
     public class ViewModel : NotifyPropertyChanged
     {
         private ObservableCollection<Row> _stringList;
+        private CollectionViewSource _stringListViewSource;
         private ObservableCollection<LogFile> _fileList;
         private ObservableCollection<string> _excludeList;
         private ObservableCollection<string> _searchList;
@@ -29,6 +31,12 @@ namespace SFCLogMonitor.ViewModel
         {
             get { return _stringList; }
             set { SetField(ref _stringList, value, "StringList"); }
+        }
+
+        public CollectionViewSource StringListViewSource
+        {
+            get { return _stringListViewSource; }
+            set { SetField(ref _stringListViewSource, value, "StringListViewSource"); }
         }
 
         public ObservableCollection<LogFile> FileList
@@ -80,16 +88,46 @@ namespace SFCLogMonitor.ViewModel
         }
     }
 
-    public class LogFile
+    public class LogFile : NotifyPropertyChanged
     {
-        public string FileName { get; set; }
-        public string LastRow { get; set; }
+        private string _fileName;
+        private string _lastRow;
+
+        public string FileName
+        {
+            get { return _fileName; }
+            set { SetField(ref _fileName, value, "FileName"); }
+        }
+
+        public string LastRow
+        {
+            get { return _lastRow; }
+            set { SetField(ref _lastRow, value, "LastRow"); }
+        }
     }
-    
-    public class Row
+
+    public class Row : NotifyPropertyChanged
     {
-        public LogFile LogFile { get; set; }
-        public string Text { get; set; }
-        public DateTime Date { get; set; }
+        private LogFile _logFile;
+        private string _text;
+        private DateTime _date;
+
+        public LogFile LogFile
+        {
+            get { return _logFile; }
+            set { SetField(ref _logFile, value, "LogFile"); }
+        }
+
+        public string Text
+        {
+            get { return _text; }
+            set { SetField(ref _text, value, "Text"); }
+        }
+
+        public DateTime Date
+        {
+            get { return _date; }
+            set { SetField(ref _date, value, "Date"); }
+        }
     }
 }
