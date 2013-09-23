@@ -50,6 +50,7 @@ namespace SFCLogMonitor.View
             watcher.EnableRaisingEvents = true;
         }
 
+        //todo validate the timespan textbox!
         private void LoadConfiguration()
         {
             Settings settings = Settings.Default;

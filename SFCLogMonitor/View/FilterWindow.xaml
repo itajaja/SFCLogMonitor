@@ -2,5 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Filter" Height="300" Width="300">
-    <Grid />
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock TextWrapping="Wrap">Add keywords to filter which rows to display. Any row containg at least one keyword will be displayed</TextBlock>
+        <CheckBox Grid.Row="1">Disable keyword filtering</CheckBox>
+    </Grid>
 </Window>
