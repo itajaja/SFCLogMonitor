@@ -4,18 +4,27 @@ using System.ComponentModel;
 namespace SFCLogMonitor.Utils
 {
     /// <summary>
-    /// Abstract base class that implements the INotifyPropertyChanged interface with some utility methods to write properties
+    ///     Abstract base class that implements the INotifyPropertyChanged interface with some utility methods to write
+    ///     properties
     /// </summary>
     public abstract class NotifyPropertyChanged : INotifyPropertyChanged
     {
+        #region events
+
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            var handler = PropertyChanged;
+            PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #endregion
+
+        #region methods
+
         /// <summary>
-        /// Set the private field with the passed value, and fires OnPropertyChanged with the given property name
+        ///     Set the private field with the passed value, and fires OnPropertyChanged with the given property name
         /// </summary>
         /// <param name="field">the private field to set</param>
         /// <param name="value">the value for the field</param>
@@ -28,5 +37,7 @@ namespace SFCLogMonitor.Utils
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        #endregion
     }
 }

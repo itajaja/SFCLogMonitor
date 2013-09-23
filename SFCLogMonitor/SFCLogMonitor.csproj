@@ -58,6 +58,7 @@
     <Compile Include="Model\LogFile.cs" />
     <Compile Include="Utils\NotifyPropertyChanged.cs" />
     <Compile Include="Model\Row.cs" />
+    <Compile Include="ViewModel\FilterWindowViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Page Include="View\FilterWindow.xaml">
       <SubType>Designer</SubType>

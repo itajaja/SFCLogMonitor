@@ -5,9 +5,15 @@ namespace SFCLogMonitor.Model
 {
     public class Row : NotifyPropertyChanged
     {
+        #region fields
+
+        private DateTime _date;
         private LogFile _logFile;
         private string _text;
-        private DateTime _date;
+
+        #endregion
+
+        #region properties
 
         public LogFile LogFile
         {
@@ -26,5 +32,7 @@ namespace SFCLogMonitor.Model
             get { return _date; }
             set { SetField(ref _date, value, "Date"); }
         }
+
+        #endregion
     }
 }

@@ -14,17 +14,17 @@ namespace SFCLogMonitor.ViewModel
     {
         #region fields
 
-        private ObservableCollection<Row> _stringList;
         private readonly CollectionViewSource _stringListViewSource;
-        private ObservableCollection<LogFile> _fileList;
-        private ObservableCollection<string> _excludeList;
-        private ObservableCollection<string> _searchList;
-        private bool _isKeyFilteringEnabled;
-        private TimeUnit _filteringTimeUnit;
-        private int _filteringTime;
-        private bool _isFilteringTimeEnabled;
         private DateTime _beginMonitoringTime;
+        private ObservableCollection<string> _excludeList;
+        private ObservableCollection<LogFile> _fileList;
+        private int _filteringTime;
+        private TimeUnit _filteringTimeUnit;
+        private bool _isFilteringTimeEnabled;
+        private bool _isKeyFilteringEnabled;
         private int _rowLimit;
+        private ObservableCollection<string> _searchList;
+        private ObservableCollection<Row> _stringList;
 
         #endregion
 
@@ -39,29 +39,27 @@ namespace SFCLogMonitor.ViewModel
             BeginMonitoringTime = DateTime.Now;
         }
 
+        #region events
+
         /// <summary>
-        ///tracks when the view changes, in order to set the timer for the next refresh
+        ///     tracks when the view changes, in order to set the timer for the next refresh
         /// </summary>
         private void ViewOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
             var collectionView = (ListCollectionView) sender;
-            var lastDisplayedRow = collectionView.Cast<Row>().LastOrDefault();
+            Row lastDisplayedRow = collectionView.Cast<Row>().LastOrDefault();
             if (lastDisplayedRow == null) return;
             DispatcherTimeout.Timeout(DispatcherPriority.Normal, FilteringTimeSpan - (DateTime.Now - lastDisplayedRow.Date),
-                _ =>
-                {
-                    if (IsFilteringTimeEnabled) StringListViewSource.View.Refresh();
-                });
+                _ => { if (IsFilteringTimeEnabled) StringListViewSource.View.Refresh(); });
         }
 
         private void OnStringListViewSourceFilter(object sender, FilterEventArgs args)
         {
             args.Accepted = true;
-            var row = (Row)args.Item;
+            var row = (Row) args.Item;
             //filter by time
             if (IsFilteringTimeEnabled)
             {
-                
                 if ((DateTime.Now - row.Date) > FilteringTimeSpan)
                 {
                     args.Accepted = false;
@@ -80,6 +78,8 @@ namespace SFCLogMonitor.ViewModel
                 args.Accepted = false;
             }
         }
+
+        #endregion
 
         #region properties
 
@@ -200,6 +200,5 @@ namespace SFCLogMonitor.ViewModel
         }
 
         #endregion
-
     }
 }

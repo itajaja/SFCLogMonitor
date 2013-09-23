@@ -14,21 +14,27 @@ using SFCLogMonitor.ViewModel;
 namespace SFCLogMonitor.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
-        private readonly MainWindowViewModel _vm;
+        #region fields
+
         private readonly string _path;
+        private readonly MainWindowViewModel _vm;
+
+        #endregion
 
         public MainWindow()
         {
             InitializeComponent();
-            _vm = (MainWindowViewModel)Resources["Vm"];
+            _vm = (MainWindowViewModel) Resources["Vm"];
             _path = Directory.GetCurrentDirectory();
             LoadConfiguration();
             InitializeWatcher();
         }
+
+        #region methods
 
         private void InitializeWatcher()
         {
@@ -46,22 +52,22 @@ namespace SFCLogMonitor.View
 
         private void LoadConfiguration()
         {
-            var settings = Settings.Default;
-            if(settings.Exclude != null)
-                _vm.ExcludeList = new ObservableCollection<string>(settings.Exclude.Cast<string>().ToList()) { "SFCLogMonitor.exe" };
+            Settings settings = Settings.Default;
+            if (settings.Exclude != null)
+                _vm.ExcludeList = new ObservableCollection<string>(settings.Exclude.Cast<string>().ToList()) {"SFCLogMonitor.exe"};
             if (settings.Filter != null)
                 _vm.SearchList = new ObservableCollection<string>(settings.Filter.Cast<string>().ToList());
-            foreach (var f in Directory.GetFiles(_path).Select(Path.GetFileName))
+            foreach (string f in Directory.GetFiles(_path).Select(Path.GetFileName))
             {
-                if (!_vm.ExcludeList.Contains(f) )
+                if (!_vm.ExcludeList.Contains(f))
                     _vm.FileList.Add(new LogFile
                     {
                         FileName = Path.GetFileName(f),
-                        LastRow  = new ReverseLineReader(f).FirstOrDefault()
+                        LastRow = new ReverseLineReader(f).FirstOrDefault()
                     });
             }
             _vm.FilteringTime = settings.TimeSpan;
-            _vm.FilteringTimeUnit = (TimeUnit)settings.TimeUnit;
+            _vm.FilteringTimeUnit = (TimeUnit) settings.TimeUnit;
             _vm.RowLimit = settings.RowLimit;
             _vm.IsFilteringTimeEnabled = settings.IsTimeFiltering;
         }
@@ -74,7 +80,7 @@ namespace SFCLogMonitor.View
                 Text = line,
                 Date = DateTime.Now
             };
-            Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.Insert(0,r)));
+            Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.Insert(0, r)));
             while (_vm.StringList.Count > _vm.RowLimit)
             {
                 Application.Current.Dispatcher.Invoke((Action) (() => _vm.StringList.RemoveAt(_vm.RowLimit)));
@@ -90,13 +96,13 @@ namespace SFCLogMonitor.View
                 LogFile logFile = _vm.FileList.SingleOrDefault(f => f.FileName == fileName);
                 if (logFile == null)
                     return;
-                foreach (var row in reverseReader)
+                foreach (string row in reverseReader)
                 {
                     if (row == logFile.LastRow)
                     {
                         break;
                     }
-                    CheckAndAddRow(row,logFile);
+                    CheckAndAddRow(row, logFile);
                 }
                 logFile.LastRow = lastRow;
             }
@@ -116,7 +122,7 @@ namespace SFCLogMonitor.View
 
         private void SaveSettings()
         {
-            var settings = Settings.Default;
+            Settings settings = Settings.Default;
             settings.TimeSpan = _vm.FilteringTime;
             settings.Exclude = new StringCollection();
             settings.Exclude.AddRange(_vm.ExcludeList.ToArray());
@@ -124,11 +130,14 @@ namespace SFCLogMonitor.View
             settings.Filter.AddRange(_vm.SearchList.ToArray());
             settings.IsTimeFiltering = _vm.IsFilteringTimeEnabled;
             settings.RowLimit = _vm.RowLimit;
-            settings.TimeUnit = (int)_vm.FilteringTimeUnit;
+            settings.TimeUnit = (int) _vm.FilteringTimeUnit;
             settings.Save();
         }
 
+        #endregion
+
         #region events
+
         private void OnChanged(object source, FileSystemEventArgs e)
         {
             CheckFile(e.Name);
@@ -158,7 +167,7 @@ namespace SFCLogMonitor.View
         {
             SaveSettings();
         }
-        #endregion
 
+        #endregion
     }
 }

@@ -4,50 +4,49 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace SFCLogMonitor
+namespace SFCLogMonitor.Utils
 {
-
     /// <summary>
-    /// Takes an encoding (defaulting to UTF-8) and a function which produces a seekable stream
-    /// (or a filename for convenience) and yields lines from the end of the stream backwards.
-    /// Only single byte encodings, and UTF-8 and Unicode, are supported. The stream
-    /// returned by the function must be seekable.
+    ///     Takes an encoding (defaulting to UTF-8) and a function which produces a seekable stream
+    ///     (or a filename for convenience) and yields lines from the end of the stream backwards.
+    ///     Only single byte encodings, and UTF-8 and Unicode, are supported. The stream
+    ///     returned by the function must be seekable.
     /// </summary>
     public sealed class ReverseLineReader : IEnumerable<string>
     {
         /// <summary>
-        /// Buffer size to use by default. Classes with internal access can specify
-        /// a different buffer size - this is useful for testing.
+        ///     Buffer size to use by default. Classes with internal access can specify
+        ///     a different buffer size - this is useful for testing.
         /// </summary>
         private const int DefaultBufferSize = 4096;
 
         /// <summary>
-        /// Means of creating a Stream to read from.
+        ///     Size of buffer (in bytes) to read each time we read from the
+        ///     stream. This must be at least as big as the maximum number of
+        ///     bytes for a single character.
         /// </summary>
-        private readonly Func<Stream> streamSource;
+        private readonly int _bufferSize;
 
         /// <summary>
-        /// Encoding to use when converting bytes to text
+        ///     Function which, when given a position within a file and a byte, states whether
+        ///     or not the byte represents the start of a character.
         /// </summary>
-        private readonly Encoding encoding;
+        private readonly Func<long, byte, bool> _characterStartDetector;
 
         /// <summary>
-        /// Size of buffer (in bytes) to read each time we read from the
-        /// stream. This must be at least as big as the maximum number of
-        /// bytes for a single character.
+        ///     Encoding to use when converting bytes to text
         /// </summary>
-        private readonly int bufferSize;
+        private readonly Encoding _encoding;
 
         /// <summary>
-        /// Function which, when given a position within a file and a byte, states whether
-        /// or not the byte represents the start of a character.
+        ///     Means of creating a Stream to read from.
         /// </summary>
-        private Func<long, byte, bool> characterStartDetector;
+        private readonly Func<Stream> _streamSource;
 
         /// <summary>
-        /// Creates a LineReader from a stream source. The delegate is only
-        /// called when the enumerator is fetched. UTF-8 is used to decode
-        /// the stream into text.
+        ///     Creates a LineReader from a stream source. The delegate is only
+        ///     called when the enumerator is fetched. UTF-8 is used to decode
+        ///     the stream into text.
         /// </summary>
         /// <param name="streamSource">Data source</param>
         public ReverseLineReader(Func<Stream> streamSource)
@@ -56,9 +55,9 @@ namespace SFCLogMonitor
         }
 
         /// <summary>
-        /// Creates a LineReader from a filename. The file is only opened
-        /// (or even checked for existence) when the enumerator is fetched.
-        /// UTF8 is used to decode the file into text.
+        ///     Creates a LineReader from a filename. The file is only opened
+        ///     (or even checked for existence) when the enumerator is fetched.
+        ///     UTF8 is used to decode the file into text.
         /// </summary>
         /// <param name="filename">File to read from</param>
         public ReverseLineReader(string filename)
@@ -67,19 +66,19 @@ namespace SFCLogMonitor
         }
 
         /// <summary>
-        /// Creates a LineReader from a filename. The file is only opened
-        /// (or even checked for existence) when the enumerator is fetched.
+        ///     Creates a LineReader from a filename. The file is only opened
+        ///     (or even checked for existence) when the enumerator is fetched.
         /// </summary>
         /// <param name="filename">File to read from</param>
         /// <param name="encoding">Encoding to use to decode the file into text</param>
         public ReverseLineReader(string filename, Encoding encoding)
-            : this(() => System.IO.File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), encoding)
+            : this(() => File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), encoding)
         {
         }
 
         /// <summary>
-        /// Creates a LineReader from a stream source. The delegate is only
-        /// called when the enumerator is fetched.
+        ///     Creates a LineReader from a stream source. The delegate is only
+        ///     called when the enumerator is fetched.
         /// </summary>
         /// <param name="streamSource">Data source</param>
         /// <param name="encoding">Encoding to use to decode the stream into text</param>
@@ -90,24 +89,24 @@ namespace SFCLogMonitor
 
         internal ReverseLineReader(Func<Stream> streamSource, Encoding encoding, int bufferSize)
         {
-            this.streamSource = streamSource;
-            this.encoding = encoding;
-            this.bufferSize = bufferSize;
+            _streamSource = streamSource;
+            _encoding = encoding;
+            _bufferSize = bufferSize;
             if (encoding.IsSingleByte)
             {
                 // For a single byte encoding, every byte is the start (and end) of a character
-                characterStartDetector = (pos, data) => true;
+                _characterStartDetector = (pos, data) => true;
             }
             else if (encoding is UnicodeEncoding)
             {
                 // For UTF-16, even-numbered positions are the start of a character
-                characterStartDetector = (pos, data) => (pos & 1) == 0;
+                _characterStartDetector = (pos, data) => (pos & 1) == 0;
             }
             else if (encoding is UTF8Encoding)
             {
                 // For UTF-8, bytes with the top bit clear or the second bit set are the start of a character
                 // See http://www.cl.cam.ac.uk/~mgk25/unicode.html
-                characterStartDetector = (pos, data) => (data & 0x80) == 0 || (data & 0x40) != 0;
+                _characterStartDetector = (pos, data) => (data & 0x80) == 0 || (data & 0x40) != 0;
             }
             else
             {
@@ -115,13 +114,15 @@ namespace SFCLogMonitor
             }
         }
 
+        #region IEnumerable<string> Members
+
         /// <summary>
-        /// Returns the enumerator reading strings backwards. If this method discovers that
-        /// the returned stream is either unreadable or unseekable, a NotSupportedException is thrown.
+        ///     Returns the enumerator reading strings backwards. If this method discovers that
+        ///     the returned stream is either unreadable or unseekable, a NotSupportedException is thrown.
         /// </summary>
         public IEnumerator<string> GetEnumerator()
         {
-            Stream stream = streamSource();
+            Stream stream = _streamSource();
             if (!stream.CanSeek)
             {
                 stream.Dispose();
@@ -135,21 +136,28 @@ namespace SFCLogMonitor
             return GetEnumeratorImpl(stream);
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        #endregion
+
         private IEnumerator<string> GetEnumeratorImpl(Stream stream)
         {
             try
             {
                 long position = stream.Length;
 
-                if (encoding is UnicodeEncoding && (position & 1) != 0)
+                if (_encoding is UnicodeEncoding && (position & 1) != 0)
                 {
                     throw new InvalidDataException("UTF-16 encoding provided, but stream has odd length.");
                 }
 
                 // Allow up to two bytes for data from the start of the previous
                 // read which didn't quite make it as full characters
-                byte[] buffer = new byte[bufferSize + 2];
-                char[] charBuffer = new char[encoding.GetMaxCharCount(buffer.Length)];
+                var buffer = new byte[_bufferSize + 2];
+                var charBuffer = new char[_encoding.GetMaxCharCount(buffer.Length)];
                 int leftOverData = 0;
                 String previousEnd = null;
                 // TextReader doesn't return an empty string if there's line break at the end
@@ -164,25 +172,25 @@ namespace SFCLogMonitor
 
                 while (position > 0)
                 {
-                    int bytesToRead = Math.Min(position > int.MaxValue ? bufferSize : (int)position, bufferSize);
+                    int bytesToRead = Math.Min(position > int.MaxValue ? _bufferSize : (int) position, _bufferSize);
 
                     position -= bytesToRead;
                     stream.Position = position;
                     StreamUtil.ReadExactly(stream, buffer, bytesToRead);
                     // If we haven't read a full buffer, but we had bytes left
                     // over from before, copy them to the end of the buffer
-                    if (leftOverData > 0 && bytesToRead != bufferSize)
+                    if (leftOverData > 0 && bytesToRead != _bufferSize)
                     {
                         // Buffer.BlockCopy doesn't document its behaviour with respect
                         // to overlapping data: we *might* just have read 7 bytes instead of
                         // 8, and have two bytes to copy...
-                        Array.Copy(buffer, bufferSize, buffer, bytesToRead, leftOverData);
+                        Array.Copy(buffer, _bufferSize, buffer, bytesToRead, leftOverData);
                     }
                     // We've now *effectively* read this much data.
                     bytesToRead += leftOverData;
 
                     int firstCharPosition = 0;
-                    while (!characterStartDetector(position + firstCharPosition, buffer[firstCharPosition]))
+                    while (!_characterStartDetector(position + firstCharPosition, buffer[firstCharPosition]))
                     {
                         firstCharPosition++;
                         // Bad UTF-8 sequences could trigger this. For UTF-8 we should always
@@ -196,7 +204,7 @@ namespace SFCLogMonitor
                     }
                     leftOverData = firstCharPosition;
 
-                    int charsRead = encoding.GetChars(buffer, firstCharPosition, bytesToRead - firstCharPosition, charBuffer, 0);
+                    int charsRead = _encoding.GetChars(buffer, firstCharPosition, bytesToRead - firstCharPosition, charBuffer, 0);
                     int endExclusive = charsRead;
 
                     for (int i = charsRead - 1; i >= 0; i--)
@@ -222,7 +230,7 @@ namespace SFCLogMonitor
                             swallowCarriageReturn = true;
                         }
                         int start = i + 1;
-                        string bufferContents = new string(charBuffer, start, endExclusive - start);
+                        var bufferContents = new string(charBuffer, start, endExclusive - start);
                         endExclusive = i;
                         string stringToYield = previousEnd == null ? bufferContents : bufferContents + previousEnd;
                         if (!firstYield || stringToYield.Length != 0)
@@ -238,7 +246,7 @@ namespace SFCLogMonitor
                     // If we didn't decode the start of the array, put it at the end for next time
                     if (leftOverData != 0)
                     {
-                        Buffer.BlockCopy(buffer, 0, buffer, bufferSize, leftOverData);
+                        Buffer.BlockCopy(buffer, 0, buffer, _bufferSize, leftOverData);
                     }
                 }
                 if (leftOverData != 0)
@@ -257,11 +265,6 @@ namespace SFCLogMonitor
                 stream.Dispose();
             }
         }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
     }
 
     public static class StreamUtil
@@ -276,12 +279,11 @@ namespace SFCLogMonitor
                 {
                     throw new EndOfStreamException
                         (String.Format("End of stream reached with {0} byte{1} left to read.",
-                                       bytesToRead - index,
-                                       bytesToRead - index == 1 ? "s" : ""));
+                            bytesToRead - index,
+                            bytesToRead - index == 1 ? "s" : ""));
                 }
                 index += read;
             }
         }
     }
 }
-

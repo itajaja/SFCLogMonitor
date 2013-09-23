@@ -1,12 +1,17 @@
 ﻿using SFCLogMonitor.Utils;
-using SFCLogMonitor.ViewModel;
 
 namespace SFCLogMonitor.Model
 {
     public class LogFile : NotifyPropertyChanged
     {
+        #region fields
+
         private string _fileName;
         private string _lastRow;
+
+        #endregion
+
+        #region properties
 
         public string FileName
         {
@@ -19,5 +24,7 @@ namespace SFCLogMonitor.Model
             get { return _lastRow; }
             set { SetField(ref _lastRow, value, "LastRow"); }
         }
+
+        #endregion
     }
 }

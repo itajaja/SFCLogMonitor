@@ -7,11 +7,10 @@ namespace SFCLogMonitor.ViewModel
     {
         #region fields
 
-        private ObservableCollection<string> _searchList;
         private bool _isKeyFilteringEnabled;
+        private ObservableCollection<string> _searchList;
 
         #endregion
-
 
         public FilterWindowViewModel(ObservableCollection<string> searchList)
         {
@@ -33,6 +32,5 @@ namespace SFCLogMonitor.ViewModel
         }
 
         #endregion
-
     }
 }
