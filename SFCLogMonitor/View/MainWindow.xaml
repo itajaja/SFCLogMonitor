@@ -14,7 +14,7 @@
     <Window.Resources>
         <SolidColorBrush x:Key="ToolBrush" Color="#FFF4F4F4" />
         <viewModel:MainWindowViewModel x:Key="Vm" />
-        <ObjectDataProvider x:Key="dataFromEnum"
+        <ObjectDataProvider x:Key="DataFromEnum"
                             MethodName="GetValues" ObjectType="{x:Type system:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="utils:TimeUnit" />
@@ -74,7 +74,7 @@
                                  Text="{Binding Path=FilteringTime}" />
                         <ComboBox VerticalAlignment="Top"
                                   IsEnabled="{Binding ElementName=TimeCheckBox, Path=IsChecked}"
-                                  ItemsSource="{Binding Source={StaticResource dataFromEnum}}"
+                                  ItemsSource="{Binding Source={StaticResource DataFromEnum}}"
                                   SelectedItem="{Binding FilteringTimeUnit}" Width="70" Margin="4,0" />
                     </StackPanel>
                 </Grid>

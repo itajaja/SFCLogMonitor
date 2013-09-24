@@ -60,7 +60,7 @@ namespace SFCLogMonitor.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5000")]
         public int RowLimit {
             get {
                 return ((int)(this["RowLimit"]));

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using SFCLogMonitor.Utils;
 
 namespace SFCLogMonitor.ViewModel
@@ -12,9 +13,9 @@ namespace SFCLogMonitor.ViewModel
 
         #endregion
 
-        public FilterWindowViewModel(ObservableCollection<string> searchList)
+        public FilterWindowViewModel()
         {
-            SearchList = searchList;
+            DeleteEntryCommand = new RelayCommand(o => SearchList.Remove((string) o));
         }
 
         #region properties
@@ -31,6 +32,14 @@ namespace SFCLogMonitor.ViewModel
             set { SetField(ref _isKeyFilteringEnabled, value, "IsKeyFilteringEnabled"); }
         }
 
+        public ICommand DeleteEntryCommand { get; private set; }
+
         #endregion
+
+        #region methods
+
+        #endregion
+
+
     }
 }

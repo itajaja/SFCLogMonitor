@@ -50,7 +50,6 @@ namespace SFCLogMonitor.View
             watcher.EnableRaisingEvents = true;
         }
 
-        //todo validate the timespan textbox!
         private void LoadConfiguration()
         {
             Settings settings = Settings.Default;
@@ -171,11 +170,16 @@ namespace SFCLogMonitor.View
             SaveSettings();
         }
 
-        #endregion
-
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            new FilterWindow().ShowDialog();
+            var filterWindow = new FilterWindow(_vm.IsKeyFilteringEnabled, _vm.SearchList);
+            if (filterWindow.ShowDialog() ?? false)
+            {
+                _vm.IsKeyFilteringEnabled = filterWindow.Vm.IsKeyFilteringEnabled;
+                _vm.SearchList = filterWindow.Vm.SearchList;
+            }
         }
+
+        #endregion
     }
 }
