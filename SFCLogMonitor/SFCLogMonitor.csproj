@@ -60,8 +60,13 @@
     <Compile Include="Model\LogFile.cs" />
     <Compile Include="Utils\NotifyPropertyChanged.cs" />
     <Compile Include="Model\Row.cs" />
+    <Compile Include="ViewModel\ExcludeWindowViewModel.cs" />
     <Compile Include="ViewModel\FilterWindowViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Page Include="View\ExcludeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\FilterWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -73,6 +78,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="View\ExcludeWindow.xaml.cs">
+      <DependentUpon>ExcludeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FilterWindow.xaml.cs">
       <DependentUpon>FilterWindow.xaml</DependentUpon>
@@ -115,6 +123,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\action_Cancel_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Symbols_Pause_32xLG.png" />
+    <Resource Include="Resources\Symbols_Play_32xLG.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

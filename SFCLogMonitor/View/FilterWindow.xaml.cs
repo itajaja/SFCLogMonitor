@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Windows;
 using SFCLogMonitor.ViewModel;
 
@@ -35,7 +34,6 @@ namespace SFCLogMonitor.View
 
         #endregion
 
-
         #region methods
 
         #endregion
@@ -54,7 +52,7 @@ namespace SFCLogMonitor.View
             Close();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ButtonAdd_Click(object sender, RoutedEventArgs e)
         {
             string s = AddKeyTextBox.Text;
             if (String.IsNullOrEmpty(s) || _vm.SearchList.Any(o => String.Compare(o, s, StringComparison.OrdinalIgnoreCase) == 0)) return;

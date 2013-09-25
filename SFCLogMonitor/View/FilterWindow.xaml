@@ -4,7 +4,7 @@
         xmlns:viewModel="clr-namespace:SFCLogMonitor.ViewModel"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         x:Class="SFCLogMonitor.View.FilterWindow"
-        Title="Filter" Height="374" Width="325" WindowStyle="None" ResizeMode="NoResize" Background="White" BorderBrush="DarkGray" BorderThickness="2" WindowStartupLocation="CenterScreen">
+        Title="Filter" Height="374" Width="325" Style="{StaticResource DialogWindowsStyle}" WindowStartupLocation="CenterScreen">
     <!--todo create window style-->
     <!--todo Make Title and icons default-->
     <Window.Resources>
@@ -21,49 +21,49 @@
                 </Button>
             </Grid>
         </DataTemplate>
+        <viewModel:InvertBoolConverter x:Key="InvertBool" />
     </Window.Resources>
-        <Grid Margin="10,5" DataContext="{StaticResource Vm}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <TextBlock TextWrapping="Wrap" Margin="0,5">
-                <Run
-                    Text="Add keywords to filter which rows to display. Any row containg at least one keyword will be displayed" />
-            </TextBlock>
-            <CheckBox Grid.Row="1" Content="Disable keyword filtering" IsChecked="{Binding IsKeyFilteringEnabled}" />
-            <ListView Margin="0,5" Grid.Row="2" ItemsSource="{Binding SearchList}"
-                      ItemTemplate="{DynamicResource SearchDataTemplate}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-            </ListView>
-            <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBox CharacterCasing="Upper" Name="AddKeyTextBox" />
-                <Button Grid.Column="1" Padding="2" Margin="5,0,0,0"
-                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Click="Button_Click">
-                    <Image Source="/SFCLogMonitor;component/Resources/action_add_16xLG.png" />
-                </Button>
-            </Grid>
-            <StackPanel Grid.Row="4" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-                <StackPanel.Resources>
-                    <Style TargetType="Button">
-                        <Setter Property="Width" Value="60"></Setter>
-                        <Setter Property="Margin" Value="5,0,0,0"></Setter>
-                        <Setter Property="Padding" Value="2"></Setter>
-                    </Style>
-                </StackPanel.Resources>
-                <Button Content="OK" Padding="2" IsDefault="True" Click="ButtonOk_Click" />
-                <Button Content="Cancel" Click="ButtonCancel_Click" />
-            </StackPanel>
+    <Grid Margin="10,5" DataContext="{StaticResource Vm}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock TextWrapping="Wrap" Margin="0,5">
+            Add keywords to filter which rows to display. Any row containg at least one keyword will be displayed
+        </TextBlock>
+        <CheckBox Grid.Row="1" Content="Keyword filtering enabled" IsChecked="{Binding IsKeyFilteringEnabled}" />
+        <ListView Margin="0,5" Grid.Row="2" ItemsSource="{Binding SearchList}"
+                      ItemTemplate="{DynamicResource SearchDataTemplate}" IsEnabled="{Binding Path=IsKeyFilteringEnabled}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <Grid Grid.Row="3" IsEnabled="{Binding Path=IsKeyFilteringEnabled}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox CharacterCasing="Upper" Name="AddKeyTextBox" />
+            <Button Grid.Column="1" Padding="2" Margin="5,0,0,0"
+                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Click="ButtonAdd_Click">
+                <Image Source="/SFCLogMonitor;component/Resources/action_add_16xLG.png" />
+            </Button>
         </Grid>
+        <StackPanel Grid.Row="4" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Width" Value="60"></Setter>
+                    <Setter Property="Margin" Value="5,0,0,0"></Setter>
+                    <Setter Property="Padding" Value="2"></Setter>
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="OK" Padding="2" IsDefault="True" Click="ButtonOk_Click" />
+            <Button Content="Cancel" Click="ButtonCancel_Click" />
+        </StackPanel>
+    </Grid>
 </Window>

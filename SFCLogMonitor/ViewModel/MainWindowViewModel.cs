@@ -16,7 +16,6 @@ namespace SFCLogMonitor.ViewModel
 
         private readonly CollectionViewSource _stringListViewSource;
         private DateTime _beginMonitoringTime;
-        private ObservableCollection<string> _excludeList;
         private ObservableCollection<LogFile> _fileList;
         private int _filteringTime;
         private TimeUnit _filteringTimeUnit;
@@ -34,7 +33,6 @@ namespace SFCLogMonitor.ViewModel
             StringListViewSource.Filter += OnStringListViewSourceFilter;
             StringList = new ObservableCollection<Row>();
             FileList = new ObservableCollection<LogFile>();
-            ExcludeList = new ObservableCollection<string>();
             SearchList = new ObservableCollection<string>();
             BeginMonitoringTime = DateTime.Now;
         }
@@ -73,7 +71,7 @@ namespace SFCLogMonitor.ViewModel
                 return;
             }
             //filter by file
-            if (ExcludeList.Contains(row.LogFile.FileName))
+            if (row.LogFile.IsExcluded)
             {
                 args.Accepted = false;
             }
@@ -102,15 +100,9 @@ namespace SFCLogMonitor.ViewModel
         public ObservableCollection<LogFile> FileList
         {
             get { return _fileList; }
-            set { SetField(ref _fileList, value, "FileList"); }
-        }
-
-        public ObservableCollection<string> ExcludeList
-        {
-            get { return _excludeList; }
             set
             {
-                SetField(ref _excludeList, value, "ExcludeList");
+                SetField(ref _fileList, value, "FileList");
                 StringListViewSource.View.Refresh();
             }
         }

@@ -1,0 +1,44 @@
+﻿<Window x:Class="SFCLogMonitor.View.ExcludeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModel="clr-namespace:SFCLogMonitor.ViewModel"
+        xmlns:model="clr-namespace:SFCLogMonitor.Model"
+        Title="Filter" Height="374" Width="325" Style="{StaticResource DialogWindowsStyle}" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <viewModel:ExcludeWindowViewModel x:Key="Vm" />
+        <DataTemplate x:Key="ExcludeDataTemplate" DataType="{x:Type model:LogFile}">
+            <Grid>
+                <ToggleButton Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}" Content="{Binding FileName}" IsChecked="{Binding IsExcluded}"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid Margin="10,5" DataContext="{StaticResource Vm}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock TextWrapping="Wrap" Margin="0,5">
+            Toggle which files are excluded from the monitor list
+        </TextBlock>
+        <ListView Margin="0,5" Grid.Row="1" ItemsSource="{Binding FileList}"
+                      ItemTemplate="{DynamicResource ExcludeDataTemplate}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <StackPanel Grid.Row="2" Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Width" Value="60"></Setter>
+                    <Setter Property="Margin" Value="5,0,0,0"></Setter>
+                    <Setter Property="Padding" Value="2"></Setter>
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="OK" Padding="2" IsDefault="True" Click="ButtonOk_Click" />
+            <Button Content="Cancel" Click="ButtonCancel_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

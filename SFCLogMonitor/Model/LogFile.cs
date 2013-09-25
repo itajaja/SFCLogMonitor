@@ -8,6 +8,7 @@ namespace SFCLogMonitor.Model
 
         private string _fileName;
         private string _lastRow;
+        private bool _isExcluded;
 
         #endregion
 
@@ -25,6 +26,11 @@ namespace SFCLogMonitor.Model
             set { SetField(ref _lastRow, value, "LastRow"); }
         }
 
+        public bool IsExcluded
+        {
+            get { return _isExcluded; }
+            set { SetField(ref _isExcluded, value, "IsExcluded"); }
+        }
         #endregion
     }
 }

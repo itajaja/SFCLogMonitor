@@ -4,5 +4,12 @@
              StartupUri="View\MainWindow.xaml">
     <Application.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <Style TargetType="Window" x:Key="DialogWindowsStyle">
+            <Setter Property="WindowStyle" Value="None"></Setter>
+            <Setter Property="ResizeMode" Value="NoResize"></Setter>
+            <Setter Property="Background" Value="White"></Setter>
+            <Setter Property="BorderBrush" Value="DarkGray"></Setter>
+            <Setter Property="BorderThickness" Value="2"></Setter>
+        </Style>
     </Application.Resources>
 </Application>
