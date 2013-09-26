@@ -43,10 +43,8 @@ namespace SFCLogMonitor.View
                 NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
                                | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
-            // Add event handlers.
             watcher.Changed += OnChanged;
             //            watcher.Created += OnCreated;
-            // Begin watching.
             watcher.EnableRaisingEvents = true;
         }
 
@@ -164,8 +162,8 @@ namespace SFCLogMonitor.View
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            var filterWindow = new FilterWindow(_vm.IsKeyFilteringEnabled, _vm.SearchList);
-            if (filterWindow.ShowDialog() ?? false) //todo check that values are applied only if OK is pressed
+            var filterWindow = new FilterWindow(_vm.IsKeyFilteringEnabled, new ObservableCollection<string>(_vm.SearchList));
+            if (filterWindow.ShowDialog() ?? false)
             {
                 _vm.IsKeyFilteringEnabled = filterWindow.Vm.IsKeyFilteringEnabled;
                 _vm.SearchList = filterWindow.Vm.SearchList;
@@ -174,13 +172,18 @@ namespace SFCLogMonitor.View
 
         private void ExcludeButton_Click(object sender, RoutedEventArgs e)
         {
-            var excludeWindow = new ExcludeWindow(_vm.FileList);
-            if (excludeWindow.ShowDialog() ?? false) //todo check that values are applied only if OK is pressed
+            var excludeWindow = new ExcludeWindow(new ObservableCollection<LogFile>(_vm.FileList.Select(f => f.DeepClone())));
+            if (excludeWindow.ShowDialog() ?? false)
             {
                 _vm.FileList = excludeWindow.Vm.FileList;
             }
         }
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.IsPaused = !_vm.IsPaused;
+        }
 
     }
 }

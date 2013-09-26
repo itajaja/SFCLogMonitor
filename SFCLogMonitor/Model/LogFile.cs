@@ -1,8 +1,9 @@
-﻿using SFCLogMonitor.Utils;
+﻿using System;
+using SFCLogMonitor.Utils;
 
 namespace SFCLogMonitor.Model
 {
-    public class LogFile : NotifyPropertyChanged
+    public class LogFile : NotifyPropertyChanged, IDeepCloneable<LogFile>
     {
         #region fields
 
@@ -32,5 +33,16 @@ namespace SFCLogMonitor.Model
             set { SetField(ref _isExcluded, value, "IsExcluded"); }
         }
         #endregion
+
+        #region methods
+
+        public LogFile DeepClone()
+        {
+            var newLog = (LogFile)MemberwiseClone();
+            return newLog;
+        }
+
+        #endregion
+
     }
 }

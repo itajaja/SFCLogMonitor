@@ -87,6 +87,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Utils\DispatcherTimeout.cs" />
+    <Compile Include="Utils\IDeepCloneable.cs" />
     <Compile Include="Utils\RelayCommand.cs" />
     <Compile Include="Utils\TailReader.cs" />
     <Compile Include="Utils\TimeUnit.cs" />

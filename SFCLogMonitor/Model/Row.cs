@@ -3,7 +3,7 @@ using SFCLogMonitor.Utils;
 
 namespace SFCLogMonitor.Model
 {
-    public class Row : NotifyPropertyChanged
+    public class Row : NotifyPropertyChanged, IDeepCloneable<Row>
     {
         #region fields
 
@@ -31,6 +31,17 @@ namespace SFCLogMonitor.Model
         {
             get { return _date; }
             set { SetField(ref _date, value, "Date"); }
+        }
+
+        #endregion
+
+        #region methods
+
+        public Row DeepClone()
+        {
+            var newLog = (Row)MemberwiseClone();
+            newLog.LogFile = LogFile.DeepClone();
+            return newLog;
         }
 
         #endregion
