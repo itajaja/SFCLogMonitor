@@ -78,7 +78,11 @@ namespace SFCLogMonitor.View
             var excludeWindow = new ExcludeWindow(new ObservableCollection<LogFile>(_vm.FileList.Select(f => f.DeepClone())));
             if (excludeWindow.ShowDialog() ?? false)
             {
-                _vm.FileList = excludeWindow.Vm.FileList;
+                foreach (LogFile file in _vm.FileList)
+                {
+                    file.IsExcluded = excludeWindow.Vm.FileList.Single(o => o.FileName == file.FileName).IsExcluded;
+                }
+                _vm.StringListViewSource.View.Refresh();
             }
         }
 

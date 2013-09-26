@@ -68,30 +68,20 @@ namespace SFCLogMonitor.ViewModel
 
         private void OnStringListViewSourceFilter(object sender, FilterEventArgs args)
         {
-            args.Accepted = true;
-            var row = (Row) args.Item;
-            //filter by time
-            if (IsFilteringTimeEnabled)
-            {
-                if ((DateTime.Now - row.Date) > FilteringTimeSpan)
-                {
-                    args.Accepted = false;
-                    return;
-                }
-            }
-            //filter by keyword
-            if (IsKeyFilteringEnabled && !SearchList.Any(s => CultureInfo.CurrentCulture.CompareInfo.IndexOf(row.Text, s, CompareOptions.IgnoreCase) >= 0))
-            {
-                args.Accepted = false;
-                return;
-            }
-            //filter by file
-            if (row.LogFile.IsExcluded)
-            {
-                args.Accepted = false;
-            }
+            args.Accepted = Filter((Row) args.Item);
         }
 
+        private bool Filter(Row row)
+        {
+            //filter by time
+            if (IsFilteringTimeEnabled)
+                if ((DateTime.Now - row.Date) > FilteringTimeSpan) return false;
+            //filter by keyword
+            if (IsKeyFilteringEnabled && !SearchList.Any(s => CultureInfo.CurrentCulture.CompareInfo.IndexOf(row.Text, s, CompareOptions.IgnoreCase) >= 0)) return false;
+            //filter by file
+            if (row.LogFile.IsExcluded) return false;
+            return true;
+        }
 
         private void OnChanged(object source, FileSystemEventArgs e)
         {
