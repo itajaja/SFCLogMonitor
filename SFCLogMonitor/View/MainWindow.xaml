@@ -48,15 +48,17 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.Resources>
-                <Style TargetType="{x:Type Button}">
+                <Style TargetType="{x:Type Button}" x:Key="OptionsButtonStyle">
                     <Setter Property="Margin" Value="3" />
                     <Setter Property="Padding" Value="2" />
+                    <Setter Property="Width" Value="80" />
+                    <Setter Property="Height" Value="24" />
                 </Style>
             </Grid.Resources>
             <GroupBox Grid.RowSpan="2" Header="Filtering">
                 <StackPanel>
-                    <Button x:Name="SearchButton" Content="Filter" Click="SearchButton_Click" />
-                    <Button x:Name="ExcluceButton" Content="Exclude Files" Click="ExcludeButton_Click" />
+                    <Button x:Name="SearchButton" Content="Filter" Click="SearchButton_Click" Style="{StaticResource OptionsButtonStyle}"/>
+                    <Button x:Name="ExcluceButton" Content="Exclude Files" Click="ExcludeButton_Click" Style="{StaticResource OptionsButtonStyle}" />
                 </StackPanel>
             </GroupBox>
             <GroupBox Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Header="Time">
@@ -89,9 +91,38 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Button Click="ClearButton_Click">Clear</Button>
-                    <Button Grid.Row="0" Grid.Column="1">Analyze</Button>
-                    <Button Grid.Row="1" Grid.Column="0">Pause</Button>
+                    <Button Click="ClearButton_Click" Style="{StaticResource OptionsButtonStyle}">Clear</Button>
+                    <Button Grid.Row="0" Grid.Column="1" IsEnabled="False" ToolTip="Operation not available in the current version" Style="{StaticResource OptionsButtonStyle}">Analyze</Button>
+                    <Button Grid.Row="1" Grid.Column="0" Click="Button_Click" HorizontalContentAlignment="Left" Padding="10,0,0,0">
+                        <Button.Resources>
+                            <Grid x:Key="PausedGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="/SFCLogMonitor;component/Resources/Symbols_Play_32xLG.png" />
+                                <TextBlock Grid.Column="1" Text="Start" VerticalAlignment="Center"/>
+                            </Grid>
+                            <Grid x:Key="StartedGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="/SFCLogMonitor;component/Resources/Symbols_Pause_32xLG.png"/>
+                                <TextBlock Grid.Column="1" Text="Pause" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Button.Resources>
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource OptionsButtonStyle}">
+                                <Setter Property="Content" Value="{StaticResource StartedGrid}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsPaused}" Value="True">
+                                        <Setter Property="Button.Content" Value="{StaticResource PausedGrid}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </Grid>
             </GroupBox>
         </Grid>

@@ -24,6 +24,7 @@ namespace SFCLogMonitor.ViewModel
         private int _rowLimit;
         private ObservableCollection<string> _searchList;
         private ObservableCollection<Row> _stringList;
+        private bool _isPaused;
 
         #endregion
 
@@ -192,6 +193,17 @@ namespace SFCLogMonitor.ViewModel
                         throw new ArgumentOutOfRangeException();
                 }
                 return span;
+            }
+        }
+
+
+        public bool IsPaused
+        {
+            get { return _isPaused; }
+            set
+            {
+                SetField(ref _isPaused, value, "IsPaused");
+                StringListViewSource.View.Refresh();
             }
         }
 
