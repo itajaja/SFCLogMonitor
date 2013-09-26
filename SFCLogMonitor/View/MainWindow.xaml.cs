@@ -2,13 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using SFCLogMonitor.Model;
 using SFCLogMonitor.Properties;
-using SFCLogMonitor.Utils;
 using SFCLogMonitor.ViewModel;
 
 namespace SFCLogMonitor.View
@@ -20,7 +17,6 @@ namespace SFCLogMonitor.View
     {
         #region fields
 
-        private readonly string _path;
         private readonly MainWindowViewModel _vm;
 
         #endregion
@@ -29,93 +25,10 @@ namespace SFCLogMonitor.View
         {
             InitializeComponent();
             _vm = (MainWindowViewModel)Resources["Vm"];
-            _path = Directory.GetCurrentDirectory();
-            LoadConfiguration();
-            InitializeWatcher();
+            _vm.LoadConfiguration();
         }
 
         #region methods
-
-        private void InitializeWatcher()
-        {
-            var watcher = new FileSystemWatcher(_path)
-            {
-                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-                               | NotifyFilters.FileName | NotifyFilters.DirectoryName
-            };
-            watcher.Changed += OnChanged;
-            //            watcher.Created += OnCreated;
-            watcher.EnableRaisingEvents = true;
-        }
-
-        private void LoadConfiguration()
-        {
-            Settings settings = Settings.Default;
-            if (settings.Filter != null)
-                _vm.SearchList = new ObservableCollection<string>(settings.Filter.Cast<string>().ToList());
-            foreach (string f in Directory.GetFiles(_path).Select(Path.GetFileName))
-            {
-                _vm.FileList.Add(new LogFile
-                {
-                    FileName = Path.GetFileName(f),
-                    LastRow = new ReverseLineReader(f).FirstOrDefault(),
-                    IsExcluded = settings.Exclude != null && settings.Exclude.Contains(Path.GetFileName(f))
-                });
-            }
-            _vm.FilteringTime = settings.TimeSpan;
-            _vm.FilteringTimeUnit = (TimeUnit)settings.TimeUnit;
-            _vm.RowLimit = settings.RowLimit;
-            _vm.IsFilteringTimeEnabled = settings.IsTimeFiltering;
-            _vm.IsKeyFilteringEnabled = settings.IsKeyFiltering;
-        }
-
-        private void CheckAndAddRow(string line, LogFile logFile)
-        {
-            var r = new Row
-            {
-                LogFile = logFile,
-                Text = line,
-                Date = DateTime.Now
-            };
-            Application.Current.Dispatcher.Invoke((Action)(() => _vm.StringList.Insert(0, r)));
-            while (_vm.StringList.Count > _vm.RowLimit)
-            {
-                Application.Current.Dispatcher.Invoke((Action)(() => _vm.StringList.RemoveAt(_vm.RowLimit)));
-            }
-        }
-
-        private void CheckFile(string fileName, int counter = 0)
-        {
-            try
-            {
-                var reverseReader = new ReverseLineReader(fileName);
-                string lastRow = reverseReader.FirstOrDefault();
-                LogFile logFile = _vm.FileList.SingleOrDefault(f => f.FileName == fileName);
-                if (logFile == null)
-                    return;
-                foreach (string row in reverseReader)
-                {
-                    if (row == logFile.LastRow)
-                    {
-                        break;
-                    }
-                    CheckAndAddRow(row, logFile);
-                }
-                logFile.LastRow = lastRow;
-            }
-            catch (IOException ioException)
-            {
-                if (counter < 10)
-                {
-                    Thread.Sleep(500);
-                    CheckFile(fileName, counter + 1);
-                }
-                else
-                {
-                    MessageBox.Show(ioException.Message, "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
 
         private void SaveSettings()
         {
@@ -135,16 +48,6 @@ namespace SFCLogMonitor.View
         #endregion
 
         #region events
-
-        private void OnChanged(object source, FileSystemEventArgs e)
-        {
-            CheckFile(e.Name);
-        }
-
-        private void OnCreated(object source, FileSystemEventArgs e)
-        {
-            //todo implement
-        }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
@@ -178,12 +81,11 @@ namespace SFCLogMonitor.View
                 _vm.FileList = excludeWindow.Vm.FileList;
             }
         }
-        #endregion
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             _vm.IsPaused = !_vm.IsPaused;
         }
-
+        #endregion
     }
 }
