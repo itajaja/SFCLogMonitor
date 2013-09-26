@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace SFCLogMonitor.Utils
 {
-    public class TrulyObservableCollection<T> : ObservableCollection<T>
+    public sealed class TrulyObservableCollection<T> : ObservableCollection<T>
         where T : INotifyPropertyChanged
     {
         public TrulyObservableCollection()

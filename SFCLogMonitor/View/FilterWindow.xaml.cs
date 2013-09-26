@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using SFCLogMonitor.ViewModel;
 
 namespace SFCLogMonitor.View
@@ -36,12 +38,22 @@ namespace SFCLogMonitor.View
 
         #region methods
 
+        protected void AddKey()
+        {
+            string s = AddKeyTextBox.Text;
+            if (!String.IsNullOrEmpty(s) && _vm.SearchList.All(o => String.Compare(o, s, StringComparison.OrdinalIgnoreCase) != 0))
+            {
+                _vm.SearchList.Add(s);
+            }
+        }
+
         #endregion
 
         #region events
 
         private void ButtonOk_Click(object sender, RoutedEventArgs e)
         {
+            if (AddKeyTextBox.IsFocused) return;
             DialogResult = true;
             Close();
         }
@@ -54,12 +66,17 @@ namespace SFCLogMonitor.View
 
         private void ButtonAdd_Click(object sender, RoutedEventArgs e)
         {
-            string s = AddKeyTextBox.Text;
-            if (String.IsNullOrEmpty(s) || _vm.SearchList.Any(o => String.Compare(o, s, StringComparison.OrdinalIgnoreCase) == 0)) return;
-            _vm.SearchList.Add(s);
+            AddKey();
         }
-        
+
+        private void AddKeyTextBox_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter) return;
+            AddKey();
+            e.Handled = true;
+        }
         #endregion
+
 
     }
 }
