@@ -10,18 +10,17 @@
     <Window.Resources>
         <viewModel:FilterWindowViewModel x:Key="Vm" />
         <DataTemplate x:Key="SearchDataTemplate" DataType="{x:Type system:String}">
-            <Grid>
+            <Grid ToolTip="{Binding}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding}"/>
+                <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis"/>
                 <Button Grid.Column="1" Padding="2" Margin="5,0,0,0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding Source={StaticResource Vm}, Path=DeleteEntryCommand}" CommandParameter="{Binding}">
                     <Image Source="/SFCLogMonitor;component/Resources/action_Cancel_16xLG.png" />
                 </Button>
             </Grid>
         </DataTemplate>
-        <viewModel:InvertBoolConverter x:Key="InvertBool" />
     </Window.Resources>
     <Grid Margin="10,5" DataContext="{StaticResource Vm}">
         <Grid.RowDefinitions>
@@ -35,7 +34,7 @@
             Add keywords to filter which rows to display. Any row containg at least one keyword will be displayed
         </TextBlock>
         <CheckBox Grid.Row="1" Content="Keyword filtering enabled" IsChecked="{Binding IsKeyFilteringEnabled}" />
-        <ListView Margin="0,5" Grid.Row="2" ItemsSource="{Binding SearchList}"
+        <ListView Margin="0,5" Grid.Row="2" ItemsSource="{Binding SearchList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                       ItemTemplate="{DynamicResource SearchDataTemplate}" IsEnabled="{Binding Path=IsKeyFilteringEnabled}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">

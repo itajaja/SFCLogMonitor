@@ -7,8 +7,20 @@
     <Window.Resources>
         <viewModel:ExcludeWindowViewModel x:Key="Vm" />
         <DataTemplate x:Key="ExcludeDataTemplate" DataType="{x:Type model:LogFile}">
-            <Grid>
-                <ToggleButton Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}" Content="{Binding FileName}" IsChecked="{Binding IsExcluded}"/>
+            <Grid ToolTip="{Binding FileName}">
+                <CheckBox IsChecked="{Binding IsExcluded}" >
+                    <TextBlock Text="{Binding FileName}" TextTrimming="CharacterEllipsis">
+                        <TextBlock.Style>
+                            <Style>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsExcluded}" Value="true">
+                                        <Setter Property="TextBlock.TextDecorations" Value="Strikethrough"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </CheckBox>
             </Grid>
         </DataTemplate>
     </Window.Resources>
@@ -22,7 +34,7 @@
             Toggle which files are excluded from the monitor list
         </TextBlock>
         <ListView Margin="0,5" Grid.Row="1" ItemsSource="{Binding FileList}"
-                      ItemTemplate="{DynamicResource ExcludeDataTemplate}">
+                      ItemTemplate="{DynamicResource ExcludeDataTemplate}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
