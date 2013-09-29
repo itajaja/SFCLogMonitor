@@ -126,9 +126,17 @@
                 </Grid>
             </GroupBox>
         </Grid>
-        <ListView Grid.Row="2" x:Name="StringListView" ItemsSource="{Binding StringListViewSource.View}"
+        <ListView Grid.Row="2" Name="StringListView" ItemsSource="{Binding StringListViewSource.View}"
                   ItemTemplate="{DynamicResource ListViewRowTemplate}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.InputBindings>
+                <KeyBinding Command="{Binding Source={StaticResource Vm}, Path=CopyRowsCommand}" CommandParameter="{Binding ElementName=StringListView}" Key="C" Modifiers="Control" />
+            </ListView.InputBindings>
+            <ListView.ContextMenu>
+                <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Self}}" >
+                    <MenuItem InputGestureText="Ctrl+C" Header="Copy" Command="{Binding Source={StaticResource Vm}, Path=CopyRowsCommand}" CommandParameter="{Binding}" />
+                </ContextMenu>
+            </ListView.ContextMenu>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -6,9 +7,13 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using SFCLogMonitor.Model;
 using SFCLogMonitor.Properties;
@@ -50,6 +55,18 @@ namespace SFCLogMonitor.ViewModel
             FileList = new ObservableCollection<LogFile>();
             SearchList = new ObservableCollection<string>();
             BeginMonitoringTime = DateTime.Now;
+            CopyRowsCommand = new RelayCommand(
+                o =>
+                {
+                    var clipBoardText = new StringBuilder();
+                    var selectedRows = ((ListView)o).SelectedItems.Cast<Row>().ToList().OrderBy(r => StringList.IndexOf(r));
+                    foreach (var i in selectedRows)
+                    {
+                        clipBoardText.AppendLine(i.Text);
+                    }
+                    Clipboard.SetText(clipBoardText.ToString());
+                },
+                o => (o != null) && ((ListView)o).SelectedItems.Count > 0);
         }
 
         #region events
@@ -223,6 +240,8 @@ namespace SFCLogMonitor.ViewModel
                     InitializeWatcher();
             }
         }
+
+        public ICommand CopyRowsCommand { get; private set; }
 
         #endregion
 
