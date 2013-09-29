@@ -135,6 +135,7 @@
             <ListView.ContextMenu>
                 <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Self}}" >
                     <MenuItem InputGestureText="Ctrl+C" Header="Copy" Command="{Binding Source={StaticResource Vm}, Path=CopyRowsCommand}" CommandParameter="{Binding}" />
+                    <MenuItem Header="Open Log File" Command="{Binding Source={StaticResource Vm}, Path=OpenLogfileCommand}" CommandParameter="{Binding}" />
                 </ContextMenu>
             </ListView.ContextMenu>
             <ListView.ItemContainerStyle>

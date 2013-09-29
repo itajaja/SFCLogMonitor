@@ -60,11 +60,21 @@ namespace SFCLogMonitor.ViewModel
                 {
                     var clipBoardText = new StringBuilder();
                     var selectedRows = ((ListView)o).SelectedItems.Cast<Row>().ToList().OrderBy(r => StringList.IndexOf(r));
-                    foreach (var i in selectedRows)
+                    foreach (var r in selectedRows)
                     {
-                        clipBoardText.AppendLine(i.Text);
+                        clipBoardText.AppendLine(r.Text);
                     }
                     Clipboard.SetText(clipBoardText.ToString());
+                },
+                o => (o != null) && ((ListView)o).SelectedItems.Count > 0);
+            OpenLogfileCommand = new RelayCommand(
+                o =>
+                {
+                    var selectedRows = ((ListView)o).SelectedItems.Cast<Row>().ToList().OrderBy(r => StringList.IndexOf(r));
+                    foreach (var r in selectedRows)
+                    {
+                        Process.Start(r.LogFile.FileName);
+                    }
                 },
                 o => (o != null) && ((ListView)o).SelectedItems.Count > 0);
         }
@@ -242,6 +252,8 @@ namespace SFCLogMonitor.ViewModel
         }
 
         public ICommand CopyRowsCommand { get; private set; }
+
+        public ICommand OpenLogfileCommand { get; private set; }
 
         #endregion
 
