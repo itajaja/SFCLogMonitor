@@ -5,7 +5,7 @@ SFCLogMonitor is a minimalistic logfile monitor.
 
 
 ##Requirements##
-SFCLogMonitor requires .NET 3.5 or higher. Tested on Windows XP and 7.
+SFCLogMonitor requires .NET 4 or higher. Tested on Windows XP and 7.
 
 ##How to use##
 Just run the program inside the folder you want to monitor, it will automatically look for all the files in the folder (subfolders exluded).
